@@ -30,6 +30,8 @@ struct Round3: View {
     @State private var intro = false
     let message = "어느날 온 세상에 좀비 바이러스가 퍼졌습니다. 이때 가장 같이 있기 싫은 생존자와 생존자 그룹을 골라보세요."
 
+    @State private var startTime: Date?
+
     let synthesizer = AVSpeechSynthesizer()
 
     var body: some View {
@@ -78,6 +80,7 @@ struct Round3: View {
     }
 
     func startTimer(_ index: Int) {
+        startTime = Date()
         timer = Timer.scheduledTimer(
             withTimeInterval: 1, repeats: true
         ) { _ in
@@ -118,9 +121,11 @@ struct Round3: View {
             if isAnswered == false {
                 if value > degree {
                     choice = "2번"
+                    saveUserDefault()
                     isAnswered = true
                 } else if value < -degree {
                     choice = "1번"
+                    saveUserDefault()
                     isAnswered = true
                 }
                 if isAnswered {
@@ -138,6 +143,13 @@ struct Round3: View {
 
     }
 
+    func saveUserDefault() {
+        var key = "chosec\(round3Index)"
+        if let stTime = startTime {
+            let spendTime = Date().timeIntervalSince(stTime)
+            UserDefaults.standard.set(spendTime, forKey: key)
+        }
+    }
 }
 
 #Preview {

@@ -18,6 +18,11 @@ struct End: View {
         NavigationStack {
             VStack {
                 Text(message)
+                ForEach(0..<5, id: \.self) { index in
+                    let key = "chosec\(index)"
+                    let time = UserDefaults.standard.double(forKey: key)
+                    Text("\(time)")
+                }
             }.onAppear { speak(message) }
         }
     }
