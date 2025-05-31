@@ -48,14 +48,14 @@ struct ContentView: View {
         "지금 당장 떠날 수 있다면? 산 vs 바다", "여친과 연락할 때 전화 vs 문자",
         "둘 중에 하나만 고른다면? 쌀떡 vs 밀떡", "민트초코 나는 호 vs 불호", "붕어빵을 먹을 때 나는 머리 vs 꼬리",
     ]
-    @State var round1Index = 0
+    @State private var round1Index = 0
     @State private var motionManager = CMMotionManager()
     @State private var middle: Double = 0.0
-    @State var timer: Timer?
-    @State var time = 10
-    @State var isAnswered = false
-    @State var shouldStartAfterSpeech = false
-    @State var choice = ""
+    @State private var timer: Timer?
+    @State private var time = 10
+    @State private var isAnswered = false
+    @State private var shouldStartAfterSpeech = false
+    @State private var choice = ""
 
     let synthesizer = AVSpeechSynthesizer()
 
@@ -65,16 +65,18 @@ struct ContentView: View {
             Text("\(round1[round1Index])").onChange(of: round1Index) { _ in
                 startRound1()
             }
-            .onAppear {
-                speechCoordinator.didFinishSpeaking = {
-                    if shouldStartAfterSpeech {
-                        startTimer(round1Index)
-                        chooseByMotion(round1Index)
-                        shouldStartAfterSpeech = false
-                    }
-                }
-                startRound1()
+            if round1Index == 8 && isAnswered {
+                NavigationLink("Round2로", destination: Round2())
             }
+        }.onAppear {
+            speechCoordinator.didFinishSpeaking = {
+                if shouldStartAfterSpeech {
+                    startTimer(round1Index)
+                    chooseByMotion(round1Index)
+                    shouldStartAfterSpeech = false
+                }
+            }
+            startRound1()
         }
     }
 
